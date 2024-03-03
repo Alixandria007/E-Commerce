@@ -8,4 +8,8 @@ class ProdutoAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug' : ('nome',)
     }
+
+@admin.register(models.Variacao)
+class VariacaoAdmin(admin.ModelAdmin):
+    list_display = 'nome', 'produto', 'preco' , 'estoque'
     

@@ -37,4 +37,22 @@ class Produto(models.Model):
             self.imagem = imgs.resize_imgs(self.imagem , 500 , True, 70)
 
         return super_save
+    
+    def __str__(self):
+        return self.nome
+    
+
+class Variacao(models.Model):
+    class Meta:
+        verbose_name = 'Variação'
+        verbose_name_plural = 'Variações'
+
+    produto = models.ForeignKey(Produto, on_delete = models.CASCADE)
+    nome = models.CharField(max_length = 55 , blank = False)
+    preco = models.FloatField(default = 0)
+    preco_promocional = models.FloatField(default = 0)
+    estoque = models.PositiveIntegerField(default = 1)
+
+    def __str__(self):
+        return f'{self.produto.nome}: {self.nome}'
 
