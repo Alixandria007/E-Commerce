@@ -19,4 +19,22 @@ class Pedido(models.Model):
                                           ))
     
     def __str__(self):
-        return f'Pedido de {self.cliente}'
+        return f'Pedido Nº{self.pk}'
+    
+class ItemPedido(models.Model):
+    class Meta:
+        verbose_name_plural = 'Itens Pedidos'
+        verbose_name = 'Item Pedido'
+
+    pedido = models.ForeignKey(Pedido, on_delete = models.CASCADE)
+    produto = models.CharField(max_length = 255)
+    produto_id = models.PositiveIntegerField()
+    variacao = models.CharField(max_length = 255)
+    variacao_id = models.PositiveIntegerField()
+    preco = models.FloatField()
+    preco_promocional = models.FloatField( default = 0)
+    quantidade = models.PositiveIntegerField()
+    imagem = models.CharField( max_length = 1200)
+
+    def __str__(self) -> str:
+        return f'Item do pedido nº {self.produto}'
