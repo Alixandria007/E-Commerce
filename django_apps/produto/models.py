@@ -1,6 +1,7 @@
 from typing import Iterable
 from django.db import models
 from ..utils import imgs
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -10,7 +11,7 @@ class Produto(models.Model):
         verbose_name_plural = 'Produtos'
 
     nome = models.CharField(max_length = 55 , blank = False)
-    slug = models.SlugField(unique = True)
+    slug = models.SlugField(unique = True, blank = True , null = True)
     descricao_longa = models.TextField(max_length = 255)
     descricao_curta = models.TextField(max_length = 60)
     imagem = models.ImageField(upload_to='prod/imgs/%Y/%m/', blank = False , null = False)
@@ -29,6 +30,8 @@ class Produto(models.Model):
         img_name = str(self.imagem.name)
         super_save = super().save(*args, **kwargs)
         img_changed = False
+
+        slug = f'{slugify(self.nome)}-{self.pk}'
 
         if self.imagem:
             img_changed = img_name != self.imagem.name

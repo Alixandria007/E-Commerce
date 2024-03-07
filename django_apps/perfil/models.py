@@ -1,7 +1,9 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth.models import User
 from ..utils import validador_cpf
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -64,6 +66,11 @@ class Perfil(models.Model):
             raise ValidationError('Cpf Invalido')
         
         return super().clean()
+    
+    def save(self):
+        save = super().save()
+
+        return save
     
     def __str__(self):
         return self.usuario.username
