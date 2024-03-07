@@ -1,5 +1,7 @@
+from typing import Any
 from django.contrib import admin
 from . import models
+from django.utils.text import slugify
 
 # Register your models here.
 
@@ -10,10 +12,16 @@ class VariacaoInline(admin.TabularInline):
 @admin.register(models.Produto)
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = 'nome', 'preco_marketing', 'preco_marketing_promocional' , 'tipo'
-    prepopulated_fields = {
-        'slug' : ('nome',)
-    }
+    readonly_fields = 'slug',
     inlines = VariacaoInline ,
+
+    def save_model(self, request, obj, form, change):
+        slug = f'{slugify(obj.nome)}-{obj.pk}'
+
+        obj.slug = slug
+
+
+        return obj.save()
 
 
 
