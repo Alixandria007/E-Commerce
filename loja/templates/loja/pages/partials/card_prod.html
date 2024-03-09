@@ -1,0 +1,45 @@
+<div class="card">
+    
+    <div class="card-img">
+        <a href="{% url "produto:detalhes" prod.slug %}">
+            <img class="card-img-top" src="{{prod.imagem.url}}" alt="Imagem do produto">
+        </a>
+    </div>
+
+
+    <div class="card-body">
+        <h3 class="card-title">
+            {{prod.nome}}
+        </h3>
+
+        <p class="card-text">
+            {{prod.descricao_curta}}
+        </p>
+
+        <div class="card-price conteiner">
+            {% if prod.preco_marketing_promocional %}
+                <span class="product-price">
+                    R$ {{prod.preco_marketing_promocional}}
+                </span>
+
+                <span class="product-old-price muted">
+                    R$ {{prod.preco_marketing}}
+                </span>
+            {% else %}
+
+                <span class="product-price">
+                    R$ {{prod.preco_marketing}}
+                </span>
+            {% endif %}
+
+        </div>
+        
+        <a class="card-link" href="{% url "produto:detalhes" prod.slug %}">
+            <button>
+                Comprar
+            </button>
+        </a>
+    </div>
+
+
+</div>

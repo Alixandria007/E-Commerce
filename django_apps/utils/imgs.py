@@ -18,7 +18,7 @@ def resize_imgs(img,nova_largura = 800 , otimizacao = True , qualidade = 60):
     nova_imagem = image_pillow.resize((nova_largura , nova_altura),Image.LANCZOS)
 
     nova_imagem.save(
-        img,
+        image_path,
         optimize = otimizacao,
         quality = qualidade
     )

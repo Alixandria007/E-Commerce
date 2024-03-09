@@ -12,11 +12,11 @@ class Produto(models.Model):
 
     nome = models.CharField(max_length = 55 , blank = False)
     slug = models.SlugField(unique = True, blank = True , null = True)
-    descricao_longa = models.TextField(max_length = 255)
-    descricao_curta = models.TextField(max_length = 60)
+    descricao_longa = models.TextField(max_length = 1255)
+    descricao_curta = models.TextField(max_length = 255)
     imagem = models.ImageField(upload_to='prod/imgs/%Y/%m/', blank = False , null = False)
     preco_marketing = models.FloatField(default = 0)
-    preco_marketing_promocional = models.FloatField(default = 0)
+    preco_marketing_promocional = models.FloatField(blank = True, null = True)
     tipo = models.CharField( 
         default = 'V',
         max_length = 1,
