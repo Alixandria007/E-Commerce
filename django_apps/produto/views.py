@@ -31,15 +31,83 @@ def detalhes(request, slug):
 
 
 def adicionar_carrinho(request):
-    
-    produto = models.Produto.objects.all().first()
-    messages.error(
-        request,
-        'Erro'
-    )
+    produto_id = request.GET.get('id', None)
 
+    if not produto_id:
+        messages.error(
+            request,
+            'O produto não existe'
+        )
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+
+
+    produto = get_object_or_404(models.Produto, id = produto_id)
+
+    produto_estoque = produto.estoque
+    produto_nome = produto.nome
+    preco_unico = produto.preco_marketing
+    preco_unico_promo = produto.preco_marketing_promocional
+    quantidade = 1
+    slug = produto.slug
+    imagem = produto.imagem
+
+    if imagem:
+        imagem = imagem.name
+    else:
+        imagem = ''
+
+
+    if produto_estoque < 1:
+        messages.error(
+            request,
+            'Não há estoque o suficiente'
+        )
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
     
-    return redirect('produto:index')
+
+    if not request.session.get('carrinho'):
+        request.session['carrinho'] = {}
+        request.session.save()
+
+    carrinho = request.session['carrinho']
+
+    if produto_id in carrinho:
+        quantidade_carrinho = carrinho[produto_id]['quantidade']
+        quantidade_carrinho += 1
+
+        if produto_estoque < quantidade_carrinho:
+            messages.warning(
+                request,
+                f'Estoque insuficiente para {quantidade_carrinho} no {produto_nome}, Adicionamos {produto_estoque} ao Carrinho' 
+            )
+            quantidade_carrinho = produto_estoque
+
+        carrinho[produto_id]['quantidade'] = quantidade_carrinho 
+        carrinho[produto_id]['preco'] = preco_unico * quantidade_carrinho
+        carrinho[produto_id]['preco_promo'] = preco_unico_promo * quantidade_carrinho
+
+    else:
+        carrinho[produto_id] = {
+            'id': produto_id,
+            'nome': produto_nome,
+            'preco': preco_unico,
+            'preco_promo': preco_unico_promo,
+            'quantidade' : 1,
+            'slug' : slug,
+            'imagem' : imagem
+        }
+
+        request.session.save()
+        
+        messages.success(
+                request,
+                f'Produto {produto_nome} adicionado ao seu '
+                f'carrinho {carrinho[produto_id]["quantidade"]}.'
+            )
+        
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+    return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+
 
 
     

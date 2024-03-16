@@ -1,16 +1,12 @@
-{% include "loja/pages/partials/head.html" %}
+{% include "loja/pages/partials/_head.html" %}
 
-{% if messages %}
-        {% for message in messages %}
-            <div class="message {{message.tags}}">
-                {{message}}
-            </div>
-        {% endfor %}
-    {% endif %}
-    
+{% include "loja/pages/partials/_messages.html" %}
+
 <body>
     {% block content %}
     
     {% endblock content %}
+
+    
 </body>
 </html>

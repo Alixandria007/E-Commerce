@@ -17,6 +17,7 @@ class Produto(models.Model):
     imagem = models.ImageField(upload_to='prod/imgs/%Y/%m/', blank = False , null = False)
     preco_marketing = models.FloatField(default = 0)
     preco_marketing_promocional = models.FloatField(blank = True, null = True)
+    estoque = models.PositiveIntegerField(default = 1)
     tipo = models.CharField( 
         default = 'V',
         max_length = 1,

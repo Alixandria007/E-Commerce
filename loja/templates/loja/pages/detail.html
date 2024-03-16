@@ -35,6 +35,9 @@
             
                     <div class="buy-button">
                         <form action="{% url "produto:adicionar_carrinho" %}" method="get">
+
+                            <input type="hidden" name="id" value="{{prod.id}}">
+
                             <button type='submit'>
                                 Adicionar ao carrinho
                             </button>
