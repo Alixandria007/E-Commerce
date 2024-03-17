@@ -120,12 +120,27 @@ def adicionar_carrinho(request):
     
 
 def remover_carrinho(request):
+    produto_id = request.GET.get('id', None)
+    
+    if not produto_id:
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
 
-    context = {
-        'produto' : 1
-    }
+    if not request.session.get('carrinho'):
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+    
+    if produto_id not in request.session.get('carrinho'):
+        return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+    
+    carrinho = request.session.get('carrinho')
 
-    return render(request,'loja/pages/detail.html', context)
+    messages.success(
+                request,
+                f'Produto {carrinho[produto_id]["nome"]} foi removido'
+            )
+
+    del carrinho[produto_id]
+    request.session.save()
+    return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
 
 
 def carrinho(request):

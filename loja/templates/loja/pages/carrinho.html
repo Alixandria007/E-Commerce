@@ -15,7 +15,8 @@
                     <tr>
                         <td><img src="/media/{{produto.imagem}}" alt=""></td>
 
-                        <td><a href="{% url "produto:detalhes" produto.slug %}">{{produto.nome}}</a> <i><a href="{% url "produto:remover_carrinho" %}">X</a></i></td>
+                        <td><a href="{% url "produto:detalhes" produto.slug %}">{{produto.nome}}</a> 
+                            <i><a href="{% url "produto:remover_carrinho" %}?id={{produto.id}}">X</a></i></td>
                         <td>{{produto.quantidade}}</td>
                         {% if produto.preco_promo %}
                             <td>{{produto.preco_promo}}</td>
