@@ -149,3 +149,6 @@ def carrinho(request):
         
     }
     return render(request,'loja/pages/carrinho.html', context)
+
+def resumo_compra(request):
+    ...

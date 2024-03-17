@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_apps.produto',
     'django_apps.perfil',
     'django_apps.pedido',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [

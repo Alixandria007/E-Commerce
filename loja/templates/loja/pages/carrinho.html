@@ -22,7 +22,7 @@
                         {% if produto.preco_promo %}
                             <td>{{produto.preco_promo|formata_preco}}</td>
                         {% else %}
-                            <td>{{produto.preco}}</td>
+                            <td>{{produto.preco |formata_preco}}</td>
                         {% endif %}
                     </tr>
 
@@ -33,6 +33,10 @@
         <span>
             Total: {{request.session.carrinho|cart_total}}
         </span>
+
+        <button type='submit'>
+            Finalizar
+        </button>
 
     {% else %}
         <p>Carrinho Vazio</p>
