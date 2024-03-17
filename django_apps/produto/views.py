@@ -13,7 +13,7 @@ def index(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'page_obj' : page_obj
+        'page_obj' : page_obj,
     }
 
 
@@ -26,7 +26,6 @@ def detalhes(request, slug):
         'prod' : produto
     }
 
-    print('Jambra')
     return render(request,'loja/pages/detail.html', context)
 
 
@@ -92,7 +91,7 @@ def adicionar_carrinho(request):
             'nome': produto_nome,
             'preco': preco_unico,
             'preco_promo': preco_unico_promo,
-            'quantidade' : 1,
+            'quantidade' : quantidade,
             'slug' : slug,
             'imagem' : imagem
         }
@@ -106,6 +105,14 @@ def adicionar_carrinho(request):
             )
         
         return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
+    
+    messages.success(
+                request,
+                f'Produto {produto_nome} adicionado ao seu '
+                f'carrinho {carrinho[produto_id]["quantidade"]}.'
+            )
+    
+    request.session.save()
     return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
 
 
@@ -122,9 +129,8 @@ def remover_carrinho(request):
 
 
 def carrinho(request):
-
+    
     context = {
-        'produto' : 1
+        
     }
-
-    return render(request,'loja/pages/detail.html', context)
+    return render(request,'loja/pages/carrinho.html', context)
