@@ -1,4 +1,5 @@
 {% extends "loja/base.html" %}
+{% load ajfilters %}
 
 {% block content %}
     {% if request.session.carrinho %}
@@ -19,7 +20,7 @@
                             <i><a href="{% url "produto:remover_carrinho" %}?id={{produto.id}}">X</a></i></td>
                         <td>{{produto.quantidade}}</td>
                         {% if produto.preco_promo %}
-                            <td>{{produto.preco_promo}}</td>
+                            <td>{{produto.preco_promo|formata_preco}}</td>
                         {% else %}
                             <td>{{produto.preco}}</td>
                         {% endif %}
@@ -29,10 +30,17 @@
             </tbody>
         </table>
 
+        <span>
+            Total: {{request.session.carrinho|cart_total}}
+        </span>
+
     {% else %}
         <p>Carrinho Vazio</p>
 
     {% endif %}
+
+
+
     
 
 

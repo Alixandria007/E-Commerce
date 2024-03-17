@@ -1,10 +1,13 @@
+{% load ajfilters %}
+
 <header>
     <nav>
         <ul>
             <li>
                 <a href="{% url "produto:carrinho" %}">
-                    Carrinho
+                    Carrinho {{request.session.carrinho|quant_carrinho}}
                 </a>
+                
             </li>
         </ul>
     </nav>
