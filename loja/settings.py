@@ -42,8 +42,12 @@ INSTALLED_APPS = [
     'django_apps.produto',
     'django_apps.perfil',
     'django_apps.pedido',
-    'crispy_forms'
+
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'PT-BR'
 
 TIME_ZONE = 'UTC'
 

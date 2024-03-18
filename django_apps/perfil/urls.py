@@ -4,8 +4,8 @@ from . import views
 app_name = 'perfil'
 
 urlpatterns = [
-    path('',views.index, name='criar'),
-    path('update/',views.index, name='update'),
-    path('login/',views.index, name='login'),
-    path('logout/',views.index, name='logout'),
+    path('',views.criar_perfil, name='criar_perfil'),
+    path('update/',views.update, name='update'),
+    path('login/',views.login, name='login'),
+    path('logout/',views.logout, name='logout'),
 ]
