@@ -1,0 +1,72 @@
+{% extends "loja/base.html" %}
+{% load ajfilters %}
+
+
+
+{% block content %}
+
+    <div>
+        <div>
+            <dt>Nome:</dt>
+            <dd>{{usuario.first_name}}</dd>
+            <dt class="col-lg-2">Sobrenome:</dt>
+            <dd class="col-lg-4">{{ usuario.last_name }}</dd>
+
+            <dt class="col-lg-2">Idade:</dt>
+            <dd class="col-lg-4">{{ perfil.idade }}</dd>
+
+            <dt class="col-lg-2">CPF:</dt>
+            <dd class="col-lg-4">{{ perfil.cpf }}</dd>
+            <dt class="col-lg-2">E-mail:</dt>
+            <dd class="col-lg-4">{{ usuario.email }}</dd>
+
+            <dl class="row">
+                <dt class="col-lg-2">Endereço:</dt>
+                <dd class="col-lg-4">{{ perfil.endereco }}</dd>
+                <dt class="col-lg-2">Número:</dt>
+                <dd class="col-lg-4">{{ perfil.numero }}</dd>
+    
+                <dt class="col-lg-2">Complemento:</dt>
+                <dd class="col-lg-4">{{ perfil.complemento }}</dd>
+                <dt class="col-lg-2">Nascimento:</dt>
+                <dd class="col-lg-4">{{ perfil.bairro }}</dd>
+    
+                <dt class="col-lg-2">Cidade:</dt>
+                <dd class="col-lg-4">{{ perfil.cidade }}</dd>
+                <dt class="col-lg-2">Estado:</dt>
+                <dd class="col-lg-4">{{ perfil.estado }}</dd>
+    
+                <dt class="col-lg-2">CEP:</dt>
+                <dd class="col-lg-4">{{ perfil.cep }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <h3>Resumo do carrinho</h3>
+            <p class="lead">Os produtos, quantidades e preços que você escolheu.</p>
+    
+            {% include 'loja/pages/partials/_carrinho.html' %}
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <p class="lead text-center"><span class="font-weight-bold">Total do carrinho:</span>
+                {{ request.session.carrinho|cart_total|formata_preco }}</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-block btn-primary btn-lg" href="">
+                Realizar pedido e pagar
+            </a>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+

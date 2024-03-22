@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.contrib import messages
 from . import models
+from django_apps.perfil.models import Perfil
 # Create your views here.
 
 def index(request):
@@ -151,4 +152,29 @@ def carrinho(request):
     return render(request,'loja/pages/carrinho.html', context)
 
 def resumo_compra(request):
-    ...
+    if request.user.is_authenticated:
+        perfil = Perfil.objects.filter(usuario = request.user).first()
+        carrinho = request.session.get('carrinho')
+
+        if not perfil:
+            messages.error(
+                request,
+                'Perfil não existe.'
+            )
+            return redirect('perfil:criar_perfil')
+
+        if not carrinho:
+            messages.error(
+                request,
+                'O Carrinho de compras não existe.'
+            )
+
+        context = {
+            'usuario': request.user,
+            'perfil': perfil,
+            'carrinho': carrinho
+        }
+
+        return render(request,'loja/pages/finalizar.html', context)
+    
+    return redirect('perfil:criar_perfil')

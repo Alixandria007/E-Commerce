@@ -3,40 +3,17 @@
 
 {% block content %}
     {% if request.session.carrinho %}
-        <table>
-            <thead>
-                <th>Imagem</th>
-                <th>Produto</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-            </thead>
-
-            <tbody>
-                {% for produto in request.session.carrinho.values %}
-                    <tr>
-                        <td><img src="/media/{{produto.imagem}}" alt=""></td>
-
-                        <td><a href="{% url "produto:detalhes" produto.slug %}">{{produto.nome}}</a> 
-                            <i><a href="{% url "produto:remover_carrinho" %}?id={{produto.id}}">X</a></i></td>
-                        <td>{{produto.quantidade}}</td>
-                        {% if produto.preco_promo %}
-                            <td>{{produto.preco_promo|formata_preco}}</td>
-                        {% else %}
-                            <td>{{produto.preco |formata_preco}}</td>
-                        {% endif %}
-                    </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
+        {% include "loja/pages/partials/_carrinho.html" %}
 
         <span>
             Total: {{request.session.carrinho|cart_total}}
         </span>
 
-        <button type='submit'>
-            Finalizar
-        </button>
+        <a href="{% url "produto:resumo_compra" %}">
+            <button type='submit'>
+                Finalizar
+            </button>
+        </a>
 
     {% else %}
         <p>Carrinho Vazio</p>
