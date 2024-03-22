@@ -120,7 +120,7 @@ def criar_perfil(request):
 def update(request):
     ...
 
-def login(request):
+def login_(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -150,7 +150,7 @@ def login(request):
             'Você fez login no sistema e pode concluir sua compra.'
         )
 
-        return redirect('produto:perfil')
+        return redirect('produto:index')
 
 def logout_(request):
     carrinho = copy.deepcopy(request.session.get('carrinho'))
