@@ -152,5 +152,12 @@ def login(request):
 
         return redirect('produto:perfil')
 
-def logout(request):
-    ...
+def logout_(request):
+    carrinho = copy.deepcopy(request.session.get('carrinho'))
+
+    logout(request)
+
+    request.session['carrinho'] = carrinho
+    request.session.save()
+
+    return redirect('produto:index')

@@ -12,7 +12,7 @@
     </p>
     {% endblock %}
         
-
+    {% if not request.user.is_authenticated %}
     <form action="" method="post">
         {% csrf_token %}
         <div class="card-grid">
@@ -35,11 +35,12 @@
                     <button type="submit" class="btn btn-primary btn-block btn-lg">Entrar</button>
                 </form>
             </div>
+        {% endif %}
 
             <div>
 
                 Cadastro
-                <form action="" method="post">
+                <form action="{% url "perfil:criar_perfil" %}" method="post">
                     {% csrf_token %}
                     {{userform|crispy}}
                     {{perfilform|crispy}}
