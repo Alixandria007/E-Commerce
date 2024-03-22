@@ -15,7 +15,7 @@ class PerfilForm(forms.ModelForm):
         exclude = 'usuario',
 
 class UserForm(forms.ModelForm):
-     
+
     password = forms.CharField(
         required=False,
         widget=forms.PasswordInput(),

@@ -4,8 +4,14 @@
     <nav>
         <ul>
             <li>
+                {% if request.session.carrinho %}
                 <a href="{% url "produto:carrinho" %}">
                     Carrinho {{request.session.carrinho|quant_carrinho}}
+                </a>
+                {% endif %}
+
+                <a href="{% url "perfil:criar_perfil" %}">
+                    Perfil
                 </a>
                 
             </li>
