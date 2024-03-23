@@ -1,14 +1,26 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django_apps.produto.models import Produto
 from django_apps.templatetags import ajfilters
 from . import models
 
 # Create your views here.
 
+@login_required(login_url='perfil:criar_perfil')
 def pagar(request, id):
-    return render(request,'loja/pages/index.html')
+    pedido = models.Pedido.objects.filter(id = id, cliente = request.user).first()
+
+    if not pedido:
+        redirect('produto:index')
+
+    context = {
+        'pedido': pedido
+    }
+
+    
+    return render(request,'loja/pages/pagar.html', context)
 
 def salvar_pedido(request):
     if not request.user.is_authenticated:
@@ -55,7 +67,7 @@ def salvar_pedido(request):
 
 
     pedido = models.Pedido(
-        usuario = request.user,
+        cliente = request.user,
         total = valor_total_carrinho,
         qtd_total = qtd_total_carrinho,
         status = 'C'
