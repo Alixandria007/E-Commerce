@@ -10,6 +10,7 @@ class Pedido(models.Model):
 
     cliente = models.ForeignKey(User, on_delete = models.CASCADE)
     total = models.FloatField(default = 0)
+    qtd_total = models.PositiveIntegerField(default = 0)
     status = models.CharField(max_length = 1 ,choices = (('A' ,'Aprovado'),
                                           ('R' , 'Reprovado'),
                                           ('C', 'Criado'),
@@ -29,8 +30,6 @@ class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete = models.CASCADE)
     produto = models.CharField(max_length = 255)
     produto_id = models.PositiveIntegerField()
-    variacao = models.CharField(max_length = 255)
-    variacao_id = models.PositiveIntegerField()
     preco = models.FloatField()
     preco_promocional = models.FloatField( default = 0)
     quantidade = models.PositiveIntegerField()

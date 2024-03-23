@@ -83,8 +83,8 @@ def adicionar_carrinho(request):
             quantidade_carrinho = produto_estoque
 
         carrinho[produto_id]['quantidade'] = quantidade_carrinho 
-        carrinho[produto_id]['preco'] = preco_unico * quantidade_carrinho
-        carrinho[produto_id]['preco_promo'] = preco_unico_promo * quantidade_carrinho
+        carrinho[produto_id]['total'] = preco_unico * quantidade_carrinho
+        carrinho[produto_id]['total_promo'] = preco_unico_promo * quantidade_carrinho
 
     else:
         carrinho[produto_id] = {
@@ -92,6 +92,8 @@ def adicionar_carrinho(request):
             'nome': produto_nome,
             'preco': preco_unico,
             'preco_promo': preco_unico_promo,
+            'total': preco_unico,
+            'total_promo': preco_unico_promo,
             'quantidade' : quantidade,
             'slug' : slug,
             'imagem' : imagem
