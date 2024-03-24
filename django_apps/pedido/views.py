@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django_apps.produto.models import Produto
 from django_apps.templatetags import ajfilters
 from . import models
@@ -94,8 +95,27 @@ def salvar_pedido(request):
 
     return redirect(reverse('pedido:pagar', kwargs={'id': pedido.pk}))
 
-def lista(request):
-    return render(request,'loja/pages/index.html')
 
+@login_required(login_url='perfil:criar_perfil')
+def lista_pedidos(request):
+    pedidos = models.Pedido.objects.filter(cliente = request.user)
+
+    paginator = Paginator(pedidos,10)
+    page_number = request.GET.get('page',None)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'pedidos': page_obj
+    }
+    return render(request,'loja/pages/lista_pedidos.html', context)
+
+@login_required(login_url='perfil:criar_perfil')
 def detalhe_pedido(request, id):
-    return render(request,'loja/pages/index.html')
+    pedido = models.Pedido.objects.filter(id = id , cliente = request.user).first()
+    print(pedido)
+
+    context = {
+        'pedido': pedido
+    }
+
+    return render(request,'loja/pages/detalhe_pedido.html', context)

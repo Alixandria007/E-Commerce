@@ -1,0 +1,12 @@
+{% extends 'loja/base.html' %}
+
+{% block titulo %}{{ pedido }} | {% endblock %}
+
+{% load ajfilters %}
+{% load static %}
+
+{% block content %}
+
+{% include 'loja/pages/partials/_pedido.html' %}
+
+{% endblock %}
