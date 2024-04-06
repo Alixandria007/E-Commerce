@@ -35,14 +35,18 @@
                         </a>
                     </li>
                 {% endif %}
+                
+                <form action="{% url "produto:search" %}" method="get">
+                    <div class="row">
+                        <div class="col">
+                            <input class="search" type="search" name="search" id="search" placeholder="Pesquisar">
+                        </div>
 
-                <li class="menu-item">
-                    <input class="search" type="search" name="search" id="search" placeholder="Pesquisar">
-                </li>
-
-                <li class="menu-item">
-                    <button class="search-button" type="submit">Pesquisar</button>
-                </li>
+                        <div class="col">
+                            <button class="search-button" type="submit">Pesquisar</button>
+                        </div>
+                    </div>
+                </form>
             </ul>
         </div>
     </nav>

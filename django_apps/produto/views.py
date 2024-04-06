@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from . import models
 from django_apps.perfil.models import Perfil
 # Create your views here.
@@ -215,3 +216,23 @@ def resumo_compra(request):
         return render(request,'loja/pages/finalizar.html', context)
     
     return redirect('perfil:criar_perfil')
+
+
+def search(request):
+    search = request.GET.get('search', None)
+
+    if search == '':
+        return redirect('produto:index')
+
+    produtos = models.Produto.objects.filter(Q(nome__icontains = search) | Q(descricao_curta__icontains = search) | Q(descricao_longa__icontains = search))
+
+    paginator = Paginator(produtos, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'search': search,
+    }
+
+    return render(request,'loja/pages/index.html', context)

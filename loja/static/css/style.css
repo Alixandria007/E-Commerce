@@ -141,10 +141,6 @@ pre{
     border-radius: 0.25rem;
 }
 
-
-
-
-
 /*Card*/
 
 .card{
@@ -166,7 +162,7 @@ pre{
 }
 
 .card-img{
-    aspect-ratio: 16 / 9;
+    max-width: 20rem;
 }
 
 .card-img-top {
