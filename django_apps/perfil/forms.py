@@ -2,6 +2,7 @@ from typing import Any
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django_apps.utils import validador_cpf
 from . import models
 
 class PerfilForm(forms.ModelForm):
@@ -14,7 +15,19 @@ class PerfilForm(forms.ModelForm):
         fields = ('__all__')
         exclude = 'usuario',
 
+
+
+
 class UserForm(forms.ModelForm):
+    first_name = forms.CharField(
+        label='Nome',
+        required=False,
+    )
+
+    last_name = forms.CharField(
+        label='Sobrenome',
+        required = False
+    )
 
     password = forms.CharField(
         required=False,
@@ -31,7 +44,12 @@ class UserForm(forms.ModelForm):
     def __init__(self, usuario = None ,*args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        for field_name, field in self.fields.items():
+            field.help_text = ''
+
         self.usuario = usuario
+
+    
 
     class Meta:
         model = User
@@ -108,6 +126,53 @@ class UserForm(forms.ModelForm):
                             ValidationError('As senhas não são compativeis.')
                         )
 
+
+        return super().clean()
+    
+
+
+class AtualizarForm(forms.ModelForm):
+    def __init__(self, usuario = None ,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.help_text = ''
+
+        self.usuario = usuario
+
+    class Meta:
+        model = User
+        fields = 'first_name', 'last_name', 'username', 'email',
+
+    def clean(self,*args,**kwargs):
+        cleaned_data = self.cleaned_data
+
+        usuario_data = cleaned_data['username']
+        email_data = cleaned_data['email']
+
+        usuario_db = User.objects.filter(username = usuario_data, email = email_data).first()
+        
+        if self.usuario:
+            
+            if usuario_db:
+                if usuario_data != usuario_db.username:
+                    self.add_error(
+                        'username',
+                        ValidationError('Usuario invalido.')
+                    )
+
+                if email_data != usuario_db.email:
+                    self.add_error(
+                        'emails',
+                        ValidationError('Email Invalido.')
+                    )
+        else:
+
+            if usuario_db:
+                self.add_error(
+                    'username',
+                    ValidationError('Este usuario já existe.')
+                )
 
         return super().clean()
         

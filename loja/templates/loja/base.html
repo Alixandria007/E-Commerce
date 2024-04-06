@@ -1,13 +1,28 @@
 {% include "loja/pages/partials/_head.html" %}
+<body>
+
 
 {% include "loja/pages/partials/_header.html" %}
+<div class=spacing></div>
 {% include "loja/pages/partials/_messages.html" %}
 
-<body>
-    {% block content %}
-    
-    {% endblock content %}
+<section class="section">
+    <div class="main-content">
+        <div class="center">
+            <h1>{% block titulo %}{{titulo}}{% endblock titulo %}</h1>
+        </div>
 
+        {% block content %}
+        
+        {% endblock content %}
+        
+        {% include "loja/pages/partials/_pagination.html" %}
+    </div>
+    
+
+    
+</section>
+    {% include "loja/pages/partials/_footer.html" %}
     
 </body>
 </html>

@@ -1,28 +1,30 @@
 {% load ajfilters %}
+<div class="carrinho">
+    <table class="table-carrinho">
+        <thead class="header-carrinho">
+            <th>Imagem</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Total</th>
+        </thead>
 
-<table>
-    <thead>
-        <th>Imagem</th>
-        <th>Produto</th>
-        <th>Quantidade</th>
-        <th>Total</th>
-    </thead>
+        <tbody class="body-carrinho">
+            {% for produto in carrinho.values %}
+                <tr class="row-carrinho">
+                    <td width="20%" class="col-carrinho"><img class="img-carrinho" src="/media/{{produto.imagem}}" alt=""></td>
 
-    <tbody>
-        {% for produto in request.session.carrinho.values %}
-            <tr>
-                <td><img src="/media/{{produto.imagem}}" alt=""></td>
+                    <td width="40%"  class="col-carrinho produto-carrinho"><a class="link-blue" href="{% url "produto:detalhes" produto.slug %}">{{produto.nome}}</a> 
+                        <a class="link-red" href="{% url "produto:remover_carrinho" %}?id={{produto.id}}"><i class="fa-solid fa-circle-xmark"></i></a></td>
+                    {% if produto.preco_promo %}
+                        <td width="20%" class="col-carrinho quant-carrinho">{{produto.quantidade}} x {{produto.preco_promo|formata_preco}}</td>
+                        <td width="20%" class="col-carrinho total-carrinho">{{produto.total_promo|formata_preco}}</td>
+                    {% else %}
+                        <td width="20%" class="col-carrinho quant-carrinho">{{produto.quantidade}}x{{produto.preco|formata_preco}}</td>
+                        <td width="20%" class="col-carrinho total-carrinho">{{produto.total|formata_preco}}</td>
+                    {% endif %}
+                </tr>
 
-                <td><a href="{% url "produto:detalhes" produto.slug %}">{{produto.nome}}</a> 
-                    <i><a href="{% url "produto:remover_carrinho" %}?id={{produto.id}}">X</a></i></td>
-                <td>{{produto.quantidade}}</td>
-                {% if produto.preco_promo %}
-                    <td>{{produto.preco_promo|formata_preco}}</td>
-                {% else %}
-                    <td>{{produto.preco |formata_preco}}</td>
-                {% endif %}
-            </tr>
-
-        {% endfor %}
-    </tbody>
-</table>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

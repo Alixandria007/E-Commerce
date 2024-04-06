@@ -46,14 +46,14 @@ def salvar_pedido(request):
 
         pid = str(produto.pk)
         estoque = produto.estoque
-        quantidade = request.session['carrinho'][pid]['quantidade']
-        preco_unt = request.session['carrinho'][pid]['preco']
-        preco_promo_unt = request.session['carrinho'][pid]['preco_promo']
+        quantidade = request.session['carrinho'][str(request.user.id)][pid]['quantidade']
+        preco_unt = request.session['carrinho'][str(request.user.id)][pid]['preco']
+        preco_promo_unt = request.session['carrinho'][str(request.user.id)][pid]['preco_promo']
         
         if estoque < quantidade:
-            request.session['carrinho'][pid]['quantidade'] = estoque
-            request.session['carrinho'][pid]['total'] = estoque * preco_unt
-            request.session['carrinho'][pid]['total_promo'] = estoque * preco_promo_unt
+            request.session['carrinho'][str(request.user.id)][pid]['quantidade'] = estoque
+            request.session['carrinho'][str(request.user.id)][pid]['total'] = estoque * preco_unt
+            request.session['carrinho'][str(request.user.id)][pid]['total_promo'] = estoque * preco_promo_unt
 
             messages.error(
                     request,
@@ -63,8 +63,8 @@ def salvar_pedido(request):
             request.session.save()
             return redirect('produto:carrinho')
         
-    qtd_total_carrinho = ajfilters.quant_carrinho(request.session['carrinho'])
-    valor_total_carrinho = ajfilters.cart_total(request.session['carrinho'])
+    qtd_total_carrinho = ajfilters.quant_carrinho(request.session['carrinho'][str(request.user.id)])
+    valor_total_carrinho = ajfilters.cart_total(request.session['carrinho'][str(request.user.id)])
 
 
     pedido = models.Pedido(
@@ -87,11 +87,12 @@ def salvar_pedido(request):
                 quantidade = p['quantidade'],
                 imagem = p['imagem'],
             )
-            for p in request.session['carrinho'].values()
+            for p in request.session['carrinho'][str(request.user.id)].values()
         ]
     )
 
-    del request.session['carrinho']
+    del request.session['carrinho'][str(request.user.id)]
+    request.session.save()
 
     return redirect(reverse('pedido:pagar', kwargs={'id': pedido.pk}))
 
@@ -112,7 +113,6 @@ def lista_pedidos(request):
 @login_required(login_url='perfil:criar_perfil')
 def detalhe_pedido(request, id):
     pedido = models.Pedido.objects.filter(id = id , cliente = request.user).first()
-    print(pedido)
 
     context = {
         'pedido': pedido

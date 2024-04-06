@@ -1,20 +1,49 @@
 {% load ajfilters %}
 
 <header>
-    <nav>
-        <ul>
-            <li>
-                {% if request.session.carrinho %}
-                <a href="{% url "produto:carrinho" %}">
-                    Carrinho {{request.session.carrinho|quant_carrinho}}
-                </a>
+    <nav class="menu">
+        <div class="menu-content">
+            <div class="menu-logo">
+                <h1 class="logo">
+                    <a class="menu-link" href="{% url "produto:index" %}">E-Commerce</a>
+                </h1>
+            </div>
+
+            <ul class="menu-list">
+
+                
+                <li class="menu-item conta">
+                    {% if request.user.is_authenticated %}
+                        Conta <span class="seta">▼</span>
+                        
+                        <ul class="menu-conta">
+                            <a class="menu-link" href="{% url "perfil:criar_perfil" %}"><li class="submenu-item">Atualizar Conta</li></a>
+                            <a class="menu-link" href="{% url "pedido:lista_pedidos" %}"><li class="submenu-item">Lista de Pedidos</li></a>
+                            <a class="menu-link" href="{% url "perfil:logout" %}"><li class="submenu-item">Sair</li></a>
+                        </ul>
+                    {% else %}
+                        <a class="menu-link" href="{% url "perfil:criar_perfil" %}">Registre-se</a>
+                    {% endif %}
+                </li>
+                
+                
+
+                {% if carrinho_usuario.carrinho %}
+                    <li class="menu-item">  
+                        <a class="menu-link" href="{% url "produto:carrinho" %}">
+                                Carrinho {{carrinho_usuario.carrinho|quant_carrinho}}x <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                    </li>
                 {% endif %}
 
-                <a href="{% url "perfil:criar_perfil" %}">
-                    Perfil
-                </a>
-                
-            </li>
-        </ul>
+                <li class="menu-item">
+                    <input class="search" type="search" name="search" id="search" placeholder="Pesquisar">
+                </li>
+
+                <li class="menu-item">
+                    <button class="search-button" type="submit">Pesquisar</button>
+                </li>
+            </ul>
+        </div>
     </nav>
 </header>

@@ -13,7 +13,7 @@ class Perfil(models.Model):
 
     usuario = models.ForeignKey(User, on_delete = models.CASCADE)
     idade = models.PositiveIntegerField(default = 1)
-    cpf = models.CharField(max_length = 14)
+    cpf = models.CharField(max_length = 14, unique = True)
     endereco = models.CharField(max_length = 65)
     numero = models.CharField(max_length = 5)
     complemento = models.CharField(max_length = 30)

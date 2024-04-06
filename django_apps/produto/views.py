@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from . import models
 from django_apps.perfil.models import Perfil
 # Create your views here.
@@ -9,11 +10,12 @@ from django_apps.perfil.models import Perfil
 def index(request):
     produtos = models.Produto.objects.all().order_by('-pk')
 
-    paginator = Paginator(produtos,10)
+    paginator = Paginator(produtos,6)
     page_number = request.GET.get('page',None)
     page_obj = paginator.get_page(page_number)
 
     context = {
+        'titulo': 'Home',
         'page_obj' : page_obj,
     }
 
@@ -24,12 +26,13 @@ def detalhes(request, slug):
     produto = models.Produto.objects.filter(slug = slug).first()
 
     context = {
-        'prod' : produto
+        'prod' : produto,
     }
 
     return render(request,'loja/pages/detail.html', context)
 
 
+@login_required(login_url='perfil:criar_perfil')
 def adicionar_carrinho(request):
     produto_id = request.GET.get('id', None)
 
@@ -47,7 +50,7 @@ def adicionar_carrinho(request):
     produto_nome = produto.nome
     preco_unico = produto.preco_marketing
     preco_unico_promo = produto.preco_marketing_promocional
-    quantidade = 1
+    quantidade = int(request.GET.get('quantidade', 1))
     slug = produto.slug
     imagem = produto.imagem
 
@@ -64,16 +67,23 @@ def adicionar_carrinho(request):
         )
         return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
     
+    user_id = str(request.user.id)
 
     if not request.session.get('carrinho'):
         request.session['carrinho'] = {}
         request.session.save()
+    
+    carrinho_ = request.session.get('carrinho')
+    if user_id not in carrinho_:
+        carrinho_[user_id] = {}
+        request.session.save()
 
-    carrinho = request.session['carrinho']
+    carrinho = carrinho_[user_id]
+
 
     if produto_id in carrinho:
         quantidade_carrinho = carrinho[produto_id]['quantidade']
-        quantidade_carrinho += 1
+        quantidade_carrinho += quantidade
 
         if produto_estoque < quantidade_carrinho:
             messages.warning(
@@ -84,16 +94,21 @@ def adicionar_carrinho(request):
 
         carrinho[produto_id]['quantidade'] = quantidade_carrinho 
         carrinho[produto_id]['total'] = preco_unico * quantidade_carrinho
-        carrinho[produto_id]['total_promo'] = preco_unico_promo * quantidade_carrinho
+        if preco_unico_promo:
+            carrinho[produto_id]['total_promo'] = preco_unico_promo * quantidade_carrinho
 
     else:
+        if not preco_unico_promo:
+            preco_unico_promo = 0
+
+
         carrinho[produto_id] = {
             'id': produto_id,
             'nome': produto_nome,
             'preco': preco_unico,
             'preco_promo': preco_unico_promo,
-            'total': preco_unico,
-            'total_promo': preco_unico_promo,
+            'total': preco_unico * quantidade,
+            'total_promo': preco_unico_promo * quantidade,
             'quantidade' : quantidade,
             'slug' : slug,
             'imagem' : imagem
@@ -103,19 +118,18 @@ def adicionar_carrinho(request):
         
         messages.success(
                 request,
-                f'Produto {produto_nome} adicionado ao seu '
-                f'carrinho {carrinho[produto_id]["quantidade"]}.'
+                f'Adicionamos {quantidade}x {produto_nome} ao seu carrinho, temos no total agora {carrinho[produto_id]['quantidade']}'
             )
         
         return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
     
     messages.success(
                 request,
-                f'Produto {produto_nome} adicionado ao seu '
-                f'carrinho {carrinho[produto_id]["quantidade"]}.'
+                f'Adicionamos {quantidade}x {produto_nome} ao seu carrinho, temos no total agora {carrinho[produto_id]['quantidade']}x'
             )
     
     request.session.save()
+
     return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
 
 
@@ -131,10 +145,10 @@ def remover_carrinho(request):
     if not request.session.get('carrinho'):
         return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
     
-    if produto_id not in request.session.get('carrinho'):
+    if produto_id not in request.session.get('carrinho').get(str(request.user.id)):
         return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
     
-    carrinho = request.session.get('carrinho')
+    carrinho = request.session['carrinho'][str(request.user.id)]
 
     messages.success(
                 request,
@@ -143,20 +157,39 @@ def remover_carrinho(request):
 
     del carrinho[produto_id]
     request.session.save()
+
     return redirect(request.META.get('HTTP_REFERER', reverse('produto:index')))
 
 
+@login_required(login_url='perfil:criar_perfil')
 def carrinho(request):
-    
-    context = {
+    user_id = str(request.user.id)
+
+    if request.session['carrinho'][str(request.user.id)]:
+        carrinho = request.session['carrinho'][str(request.user.id)]
         
+        context = {
+        'carrinho': carrinho,
+        'titulo': "Carrinho"
     }
-    return render(request,'loja/pages/carrinho.html', context)
+        
+        return render(request,'loja/pages/carrinho.html', context)
+        
+    else:
+         return render(request,'loja/pages/carrinho.html')
+
+
+    
+
+
+    
 
 def resumo_compra(request):
     if request.user.is_authenticated:
         perfil = Perfil.objects.filter(usuario = request.user).first()
-        carrinho = request.session.get('carrinho')
+
+        if request.session['carrinho'][str(request.user.id)]:
+            carrinho = request.session['carrinho'][str(request.user.id)]
 
         if not perfil:
             messages.error(
@@ -170,6 +203,8 @@ def resumo_compra(request):
                 request,
                 'O Carrinho de compras não existe.'
             )
+
+            return redirect('produto:index')
 
         context = {
             'usuario': request.user,

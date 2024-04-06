@@ -35,8 +35,3 @@ def validar_cpf(cpf: str):
         raise ValidationError('Este cpf é invalido')
     
     return True
-        
-
-
-
-validar_cpf('57059513884')

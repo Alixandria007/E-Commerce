@@ -1,11 +1,12 @@
 {% extends 'loja/base.html' %}
 {% load ajfilters %}
 
+{% block titulo %}Pedidos de {{ user }}{% endblock titulo %}
+
 {% block content %}
 
 <div class="row">
     <div class="col">
-        <h3 class="mb-4">Pedidos de {{ user }}</h3>
         <p>Abaixo todos os seus pedidos realizados na loja.</p>
 
         <div class="table-responsive">

@@ -20,7 +20,7 @@ def criar_perfil(request):
         
 
         context = {
-                'userform': forms.UserForm(
+                'userform': forms.AtualizarForm(
                     data = request.POST or None,
                     usuario=request.user,
                     instance = request.user
@@ -29,6 +29,7 @@ def criar_perfil(request):
                     data = request.POST or None,
                     instance = perfil
                 ),
+                'titulo': 'Atualizar',
             }
         
     else:
@@ -40,6 +41,7 @@ def criar_perfil(request):
                 'perfilform': forms.PerfilForm(
                     data = request.POST or None
                 ),
+                'titulo': 'Login',
             }
         
     userform = context['userform']
@@ -87,23 +89,28 @@ def criar_perfil(request):
             usuario.set_password(password)
             usuario.save()
 
+            perfil = perfilform.save(commit=False)
+            perfil.usuario = usuario
+            perfil.save()
+            
+            messages.success(
+            request,
+            'Seu cadastro foi criado ou atualizado com sucesso.'
+            )
+
             if password:
                 autenticar = authenticate(
                     request,
-                    usuario = username,
+                    username = usuario,
                     password = password
                 )
 
             if autenticar:
-                login(request, user = username)
+                login(request, user = usuario)
+            else:
+                pass
 
-        request.session['carrinho'] = carrinho
-        request.session.save()
-
-        messages.success(
-            request,
-            'Seu cadastro foi criado ou atualizado com sucesso.'
-        )
+        
 
         messages.success(
             request,

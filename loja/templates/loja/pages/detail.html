@@ -1,50 +1,63 @@
 {% extends "loja/base.html" %}
 
 {% block content %}
-    <div class="details">
-        <div class="details-image">
-            <img src="{{prod.imagem.url}}" alt="">
-        </div>
-        
-        <div class="details-body">
-            <div class="details-name">
-                <h3>
-                    {{prod.nome}}
-                </h3>
+
+        <div class="details">
+            <div class="details-image">
+                <img src="{{prod.imagem.url}}" alt="{{prod.nome}}">
             </div>
-
-            <p class="details-description">
-                {{prod.descricao_curta}}
-            </p>
-
-                <div class="details-price">
-                    {% if prod.preco_marketing_promocional %}
-                        <span class="product-price">
-                            R$ {{prod.preco_marketing_promocional}}
-                        </span>
-
-                        <span class="product-old-price muted">
-                            R$ {{prod.preco_marketing}}
-                        </span>
-                    {% else %}
-
-                        <span class="product-price">
-                            R$ {{prod.preco_marketing}}
-                        </span>
-                    {% endif %}
             
-                    <div class="buy-button">
-                        <form action="{% url "produto:adicionar_carrinho" %}" method="get">
+            <div class="details-body">
+                <div class="details-name">
+                    <h3>
+                        {{prod.nome}}
+                    </h3>
+                </div>
 
+                <pre class="details-description">
+                    {{prod.descricao_curta}}
+                </pre>
+
+                    <div class="details-price">
+                        
+                            <span class="product-old-price muted">
+                                R$ {{prod.preco_marketing}}
+                            </span>
+                        {% if prod.preco_marketing_promocional %}
+                            <span class="product-price">
+                                R$ {{prod.preco_marketing_promocional}}
+                            </span>
+
+                            
+                        {% else %}
+
+                            <span class="product-price">
+                                R$ {{prod.preco_marketing}}
+                            </span>
+                        {% endif %}
+                
+                        
+                        <form action="{% url "produto:adicionar_carrinho" %}" method="get">
                             <input type="hidden" name="id" value="{{prod.id}}">
 
-                            <button type='submit'>
-                                Adicionar ao carrinho
-                            </button>
+                            <div class="details-quant">
+                                <label for="quantidade">Quantidade:</label>
+                                <input class="quantidade" value="1" type="number" name="quantidade" id="quantidade" min="1" max="{{prod.estoque}}" >
+                            </div>
+
+                            <div class="buy-button">
+                                <button type='submit'>
+                                    Adicionar ao carrinho
+                                </button>
+                            </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>
+
+            
+            <h3>Descrição do produto</h3>
+            <pre>{{prod.descricao_longa}}</pre>
         </div>
-    </div>
 {% endblock content %}
